@@ -13,8 +13,10 @@
 
 <body>
     <div class="container">	
-        <div class="user-container"></div>	
-        <div class="quote-container"></div>	
+        <div class="user-container">
+        </div>	
+        <div class="quote-container"> 
+        </div>	
         <div class="content-container">	
             <div class="pokemon-container"></div>	
             <div class="meat-container"></div>	
@@ -26,9 +28,39 @@
         </div>	
         <div class="buttons">	
             <button>Load User Data</button>	
-            <button>Display User</button>	
+            <button>Save User</button>	
+            <button>Display User</button>
         </div>	
     </div>
+    <script id="userText" type="text/x-handelbars-template">
+        <img  src="{{this.getPhotoUrl}}" id="profile-pic"> 
+        <p class="user-info"> {{this.firstName}} {{this.lastName}} </br>
+            {{this.city}} {{this.state}}
+        </p>
+
+    </script> 
+    <script id="userQuote" type="text/x-handelbars-template">
+        <p>{{this.quote}}</p>
+    </script> 
+    <script id="aboutMeText" type="text/x-handelbars-template">
+        <h5>About Me</h5>
+        <p class="meat-text" >{{this.text}}</p>
+    </script> 
+    <script id="pokemon" type="text/x-handelbars-template">
+        <img id="pokemon-image" src={{this.urlPhoto}}>
+        <p id="pokemon-text ">{{this.name}}</p>
+    </script> 
+    <script id="freindsList" type="text/x-handelbars-template">
+        <ul>
+            {{#each freindsList}}
+                <li class="user-info"> {{this.firstName}} {{this.lastName}} </li>
+            {{/each}}
+        </ul>
+    </script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="Renderer.js"></script> <script src="APIManager.js"></script> <script  src="main.js"></script> 
+
 </body>
 
 </html>
