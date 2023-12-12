@@ -11,11 +11,7 @@ $(".buttons").on("click", "button", function(){
 })
 
 const displayUser = function(){
-        Promise.all([mainUser.setByApi()]).then(()=> {
-        render.renderPage(mainUser)
-        })
-        .then(()=> console.log(mainUser.getQuote()))
-        console.log(mainUser)
+    mainUser.setByApi().then(() => render.renderPage(mainUser))
     }
     
 
@@ -31,6 +27,8 @@ const loadUser = function(){
         currentUser.quote =  oldUser.quote
         currentUser.aboutMeText = oldUser.aboutMeText
         currentUser.frindes = oldUser.frindes
-        currentUser.Peckomon =oldUser.Peckomon
+        currentUser.peckomon = new Peckomon ()
+        currentUser.peckomon.name = oldUser.peckomon.name
+        currentUser.peckomon.urlPhoto = oldUser.peckomon.urlPhoto
     render.renderPage( currentUser)
 }

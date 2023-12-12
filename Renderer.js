@@ -1,4 +1,4 @@
-
+// ToDo : create render function 
 class Renderer {
     constructor(){
 
@@ -9,7 +9,6 @@ class Renderer {
         const template = Handlebars.compile(source);
         const newHTML = template({freindsList});
         $('.friends-container').append(newHTML)
-        console.log("yes")
     }
     renderUser(user){
         this.removeElement('.user-container')
@@ -17,7 +16,6 @@ class Renderer {
         const template = Handlebars.compile(source);
         const newHTML = template(user);
         $('.user-container').append(newHTML)
-        console.log("yes")
     }
     renderQuote(quote){
         this.removeElement('.quote-container')
@@ -25,7 +23,6 @@ class Renderer {
         const template = Handlebars.compile(source);
         const newHTML = template({quote});
         $('.quote-container').append(newHTML)
-        console.log("yes")
     }
     renderAboutMe(text){
         this.removeElement('.meat-container')
@@ -33,7 +30,6 @@ class Renderer {
         const template = Handlebars.compile(source);
         const newHTML = template({text});
         $('.meat-container').append(newHTML)
-        console.log("yes")
     }
     renderPokemon(pokemon){
         this.removeElement('.pokemon-container')
@@ -41,14 +37,13 @@ class Renderer {
         const template = Handlebars.compile(source);
         const newHTML = template(pokemon);
         $('.pokemon-container').append(newHTML)
-        console.log("yes")
     }
     renderPage(mainUser){
         this.renderUser(mainUser)
         this.renderFrindes(mainUser.getFrindes())
         this.renderQuote(mainUser.getQuote())
         this.renderAboutMe(mainUser.getAboutMe())
-        this.renderPokemon(mainUser.Peckomon)
+        this.renderPokemon(mainUser.getPokemon())
     }
     removeElement(element){
         $(element).empty()

@@ -1,7 +1,8 @@
-
-//This is the class that will manage all your APIs
+// ToDo : add frindes url to return all people one ,
+//        pokemon const max num to use it 
+const usersNum = 8
 const ApiUrls = { 
-    RandomUser : "https://randomuser.me/api/?format=json",
+    RandomUser : `https://randomuser.me/api/?format=json&results=8`,
     RandomQuote : "https://api.kanye.rest/",
     RandomPokemon: "https://pokeapi.co/api/v2/pokemon/",
     RandomAboutMe: "https://baconipsum.com/api/?type=meat-and-filler&paras=1&format=json"
@@ -13,33 +14,31 @@ class APIManager {
         this.data = ""
     }
     getApiResponse(){
-        return  new  Promise ((resolve, reject) =>{
-    
-            fetch(this.url)
-            .then(response => {
-                if (response.ok) {
-                return response.json();
+        return  new  Promise ((resolve, reject) =>{  
+                fetch(this.url)
+                .then(response => {
+                    if (response.ok) {
+                    return response.json();
+                    }
+                    throw new Error('Request failed');
+                })
+                .then(data => {
+                    resolve(
+                        this.data = data,
+                    )
                 }
-                throw new Error('Request failed');
-            })
-            .then(data => {
-                resolve(
-                    this.data = data,
-                    // console.log(data)
                 )
-            }
-            )
-            .catch(error => {
-                reject(error);
-            })
-    });
+                .catch(error => {
+                    reject(error);
+                })
+            });
     }
     getData (){
         return this.data
     }
 
 }
-// module.exports = APIManager
+
 class User{
     constructor(firstName, lastName){
         this.firstName = firstName
@@ -51,23 +50,30 @@ class User{
     getLastName(){
         return this.lastName
     }
-    setByAPI(){
-        const apiManger = new APIManager(ApiUrls.RandomUser) 
-        return apiManger.getApiResponse()
-                .then(()=>{
-                    const userName = apiManger.data.results[0].name
-                    this.firstName = userName.first
-                    this.lastName = userName.last
-                    })
-                .then(()=>apiManger.getApiResponse())
+}
+class Peckomon {
+    constructor(){
+        this.name = ""
+        this.urlPhoto = ""
+    }
+    getRandomPeckomonByApi(){
+        const randomId = Math.floor(Math.random() * 980) + 1;
+        const apiManger = new APIManager(ApiUrls.RandomPokemon+randomId) 
+        apiManger.getApiResponse().then((data)=>{
+            let pokemonName = data.name
+            this.name = pokemonName.charAt(0).toUpperCase()+ pokemonName.substring(1)
+            console.log(data )
+            this.urlPhoto = data.sprites.other["official-artwork"].front_default
+            console.log(data )
+        })
     }
 }
 class Frinde extends User{
-    constructor(){
-        super()
+    constructor(firstName, lastName){
+        super(firstName, lastName)
     }
 }
-
+//ToDo : add set function to all attributes 
 class MainUser extends User{
     constructor(firstName, lastName, city, state){
         super(firstName, lastName)
@@ -77,7 +83,7 @@ class MainUser extends User{
         this.quote =  ""
         this.aboutMeText = ""
         this.frindes = []
-        this.Peckomon = ""
+        this.peckomon = new Peckomon()
     }
     getPhotoUrl(){
         return this.photoUrl
@@ -89,7 +95,6 @@ class MainUser extends User{
         const apiManger = new APIManager(ApiUrls.RandomQuote) 
         apiManger.getApiResponse().then((data)=>{
             this.quote = data.quote
-            console.log(this.quote )
         })
     }
     getQuote(){
@@ -105,43 +110,37 @@ class MainUser extends User{
     getAboutMe (){
         return this.aboutMeText
     }
-    setFrindes (){
-        for(let i = 1; i <= 7; i++){
-        const frinde = new Frinde()
-        frinde.setByAPI().then(() => this.frindes.push(frinde))}
-                
-        }
+    setFrindes (frindesList){
+        this.frindes =[]
+        for(let i = 1; i < frindesList.length; i++){
+            const userName = frindesList[i].name
+            const friend = new Frinde (userName.first, userName.last)
+            this.frindes.push(friend)}
+    }
     getFrindes (){
         return this.frindes
     }
+    getPokemon (){
+        return this.peckomon
+    }
     setByApi (){
-    return super.setByAPI().then((response) => {
-        this.city = response.results[0].location.city
-        this.state = response.results[0].location.state
-        this.photoUrl = response.results[0].picture.medium
-        this.setFrindes()
-        this.setQuote()
-        this.setAboutMe()
-        this.Peckomon = new Peckomon()
-    }).then(()=> super.setByAPI())
+        const apiManger = new APIManager(ApiUrls.RandomUser) 
+        return Promise.all([this.setQuote(),this.setAboutMe(),this.peckomon.getRandomPeckomonByApi()])
+                .then(() => apiManger.getApiResponse()
+                    .then((response)=>{
+                        const userName = response.results[0].name
+                        this.firstName = userName.first
+                        this.lastName = userName.last
+                        this.city = response.results[0].location.city
+                        this.state = response.results[0].location.state
+                        this.photoUrl = response.results[0].picture.medium
+                        this.setFrindes(apiManger.data.results) 
+                    }))
+        
+                
+                    
+                
         
     }
 
-}
-class Peckomon {
-    constructor(){
-        this.name = ""
-        this.urlPhoto = ""
-        this.getRandomPeckomon()
-    }
-    getRandomPeckomon(){
-        const randomId = Math.floor(Math.random() * 980) + 1;
-        const apiManger = new APIManager(ApiUrls.RandomPokemon+randomId) 
-        apiManger.getApiResponse().then((data)=>{
-            this.name = data.name
-            console.log(data )
-            this.urlPhoto = data.sprites.other["official-artwork"].front_default
-            console.log(data )
-        })
-    }
 }
